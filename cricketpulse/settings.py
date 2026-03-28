@@ -154,7 +154,7 @@ CORS_ALLOW_CREDENTIALS = True
 # ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://vruthvik-chinthoju.github.io/cricketpulse"
+    "https://vruthvik-chinthoju.github.io"
 ]
 
 REST_FRAMEWORK = {
