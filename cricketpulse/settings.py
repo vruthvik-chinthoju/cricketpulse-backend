@@ -35,11 +35,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 DEBUG = False
 
 
-ALLOWED_HOSTS = [
-    "cricketpulse-api.onrender.com",
-    "localhost",
-    "127.0.0.1"
-]
+ALLOWED_HOSTS = ["cricketpulse-backend.onrender.com"]
 
 # Application definition
 
