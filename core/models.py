@@ -1,6 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.apps import AppConfig
 
+
+class CoreConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'core'
+
+    def ready(self):
+        import core.signals
+
+        
 
 class Team(models.Model):
     name = models.CharField(max_length=50)
