@@ -14,8 +14,8 @@ class Command(BaseCommand):
 
         for m in matches:
 
-            team1 = Team.objects.get(name=m["team1"])
-            team2 = Team.objects.get(name=m["team2"])
+            team1, _ = Team.objects.get_or_create(name=m["team1"])
+            team2, _ = Team.objects.get_or_create(name=m["team2"])
 
             match_datetime = datetime.strptime(
                 f"{m['date']} {m['time']}",
