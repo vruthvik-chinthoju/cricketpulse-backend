@@ -35,7 +35,10 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 DEBUG = False
 
 
-ALLOWED_HOSTS = ["cricketpulse-backend.onrender.com"]
+ALLOWED_HOSTS = [
+    "cricketpulse-backend.onrender.com",
+    ".onrender.com"
+]
 
 # Application definition
 
@@ -154,7 +157,8 @@ CORS_ALLOW_CREDENTIALS = True
 # ]
 
 CORS_ALLOWED_ORIGINS = [
-    "https://vruthvik-chinthoju.github.io"
+    "https://vruthvik-chinthoju.github.io",
+    "https://vruthvik-chinthoju.github.io/cricketpulse"
 ]
 
 REST_FRAMEWORK = {
@@ -183,3 +187,5 @@ AUTHENTICATION_BACKENDS = (
 )
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
