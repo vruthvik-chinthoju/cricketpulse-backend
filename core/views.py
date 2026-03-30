@@ -19,6 +19,15 @@ from .models import Match, Prediction, Team, CachedPlayer
 from .serializers import MatchSerializer, PredictionSerializer, RegisterSerializer
 from .ai_engine import predict_match_ai
 
+from django.contrib.auth.models import User
+
+
+
+
+
+
+
+
 
 
 API_KEY = "1775198c-0200-4142-80cc-ec951bf196f7"
@@ -488,3 +497,24 @@ def update_match_winner(request, match_id):
     ).exclude(predicted_winner=winner).update(points=0)
 
     return Response({"message": "Winner updated successfully"})
+
+
+
+@api_view(['POST'])
+def create_admin(request):
+    username = request.data.get("username")
+    password = request.data.get("password")
+
+    if User.objects.filter(username=username).exists():
+        return Response({"error": "User already exists"})
+
+    user = User.objects.create_user(
+        username=username,
+        password=password
+    )
+
+    user.is_staff = True
+    user.is_superuser = True
+    user.save()
+
+    return Response({"message": "Admin created successfully"})
