@@ -42,6 +42,7 @@ ALLOWED_HOSTS = [
 
 # Application definition
 
+id="c1"
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -156,8 +157,16 @@ CORS_ALLOW_CREDENTIALS = True
 #     "http://127.0.0.1:5173",
 # ]
 
-CORS_ALLOWED_ORIGINS = [
-    "https://vruthvik-chinthoju.github.io"
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://.*\.github\.io$",
+]
+
+CORS_ALLOW_HEADERS = [
+    "authorization",
+    "content-type",
+    "accept",
+    "origin",
+    "user-agent",
 ]
 
 REST_FRAMEWORK = {
