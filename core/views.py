@@ -11,17 +11,14 @@ from django.contrib.auth import get_user_model
 from google.oauth2 import id_token
 from google.auth.transport.requests import Request
 from rest_framework_simplejwt.tokens import RefreshToken
-
 import requests
-
+import os
 from django.core.cache import cache
 
 from .models import Match, Prediction, Team, CachedPlayer
 from .serializers import MatchSerializer, PredictionSerializer, RegisterSerializer
 from .ai_engine import predict_match_ai
 
-from allauth.socialaccount.providers.github.views import GitHubOAuth2Adapter
-from dj_rest_auth.registration.views import SocialLoginView
 
 
 API_KEY = "1775198c-0200-4142-80cc-ec951bf196f7"
@@ -168,7 +165,7 @@ def chat_ai(request):
         teams = Team.objects.all()
         names = [t.short_name for t in teams]
 
-        return Response({"reply": "🏏 IPL Teams:\n" + ", ".join(names)})
+        return Response({"reply": "IPL Teams:\n" + ", ".join(names)})
 
     if "team stats" in msg:
 
@@ -257,8 +254,7 @@ class GoogleLogin(APIView):
         })
 
 
-class GithubLogin(SocialLoginView):
-    adapter_class = GitHubOAuth2Adapter
+
 
 
 @api_view(['GET'])
@@ -388,3 +384,62 @@ def team_list(request):
         })
 
     return Response(data)
+
+
+class GithubLogin(APIView):
+
+    def post(self, request):
+        code = request.data.get("code")
+
+        token_res = requests.post(
+            "https://github.com/login/oauth/access_token",
+            data={
+                "client_id": os.getenv("GITHUB_CLIENT_ID"),
+                "client_secret": os.getenv("GITHUB_CLIENT_SECRET"),
+                "code": code,
+            },
+            headers={"Accept": "application/json"}
+        )
+
+        token_json = token_res.json()
+        access_token = token_json.get("access_token")
+
+        if not access_token:
+            return Response({"error": "Failed to get access token"}, status=400)
+
+        # 🔥 Step 2: Get user info
+        user_res = requests.get(
+            "https://api.github.com/user",
+            headers={"Authorization": f"Bearer {access_token}"}
+        )
+
+        user_data = user_res.json()
+
+        email = user_data.get("email")
+
+        # GitHub sometimes doesn't return email → fix:
+        if not email:
+            email_res = requests.get(
+                "https://api.github.com/user/emails",
+                headers={"Authorization": f"Bearer {access_token}"}
+            )
+            emails = email_res.json()
+            primary = next((e for e in emails if e["primary"]), None)
+            email = primary["email"] if primary else None
+
+        if not email:
+            return Response({"error": "Email not found"}, status=400)
+
+        # 🔥 Step 3: Create or get user
+        user, _ = User.objects.get_or_create(
+            email=email,
+            defaults={"username": email.split("@")[0]}
+        )
+
+        # 🔥 Step 4: Generate JWT
+        refresh = RefreshToken.for_user(user)
+
+        return Response({
+            "access": str(refresh.access_token),
+            "refresh": str(refresh)
+        })
