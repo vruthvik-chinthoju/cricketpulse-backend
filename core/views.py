@@ -403,12 +403,7 @@ class GithubLogin(APIView):
 
         )
 
-        print("CODE:", code)
-        print("CLIENT ID:", os.getenv("GITHUB_CLIENT_ID"))
-        print("CLIENT SECRET:", os.getenv("GITHUB_CLIENT_SECRET"))
 
-        print("TOKEN RESPONSE:", token_res.json())
-        
         token_json = token_res.json()
         access_token = token_json.get("access_token")
 
