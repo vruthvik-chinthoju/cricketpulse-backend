@@ -499,22 +499,28 @@ def update_match_winner(request, match_id):
     return Response({"message": "Winner updated successfully"})
 
 
-
 @api_view(['POST'])
 def create_admin(request):
-    username = request.data.get("username")
-    password = request.data.get("password")
+    try:
+        username = request.data.get("username")
+        password = request.data.get("password")
 
-    if User.objects.filter(username=username).exists():
-        return Response({"error": "User already exists"})
+        if not username or not password:
+            return Response({"error": "Username and password required"}, status=400)
 
-    user = User.objects.create_user(
-        username=username,
-        password=password
-    )
+        if User.objects.filter(username=username).exists():
+            return Response({"error": "User already exists"})
 
-    user.is_staff = True
-    user.is_superuser = True
-    user.save()
+        user = User.objects.create_user(
+            username=username,
+            password=password
+        )
 
-    return Response({"message": "Admin created successfully"})
+        user.is_staff = True
+        user.is_superuser = True
+        user.save()
+
+        return Response({"message": "Admin created successfully"})
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
