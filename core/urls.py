@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import match_list, create_prediction, my_predictions, leaderboard,register_view,team_list,current_user,get_ipl_squads,get_player_info,predict_match,chat_ai
+from .views import match_list, create_prediction, my_predictions, leaderboard,register_view,team_list,current_user,get_ipl_squads,get_player_info,predict_match,chat_ai,update_match_winner
 
 urlpatterns = [
     path('matches/', match_list),
@@ -13,6 +13,7 @@ urlpatterns = [
     path('ipl/player/<str:player_id>/', get_player_info),
     path("predict/<int:match_id>/",predict_match),
     path("chat-ai/", chat_ai),
+    path("update-winner/<int:match_id>/",update_match_winner),
     
     
 ]

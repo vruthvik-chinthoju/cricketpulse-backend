@@ -410,7 +410,6 @@ class GithubLogin(APIView):
         if not access_token:
             return Response({"error": "Failed to get access token"}, status=400)
 
-        # 🔥 Step 2: Get user info
         user_res = requests.get(
             "https://api.github.com/user",
             headers={"Authorization": f"Bearer {access_token}"}
@@ -446,3 +445,46 @@ class GithubLogin(APIView):
             "access": str(refresh.access_token),
             "refresh": str(refresh)
         })
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def update_match_winner(request, match_id):
+
+    if not request.user.is_staff:
+        return Response({"error": "Admin only"}, status=403)
+
+    try:
+        match = Match.objects.get(id=match_id)
+    except Match.DoesNotExist:
+        return Response({"error": "Match not found"}, status=404)
+
+    if match.winner:
+        return Response({"error": "Winner already set"}, status=400)
+
+    winner_id = request.data.get("winner")
+
+    if not winner_id:
+        return Response({"error": "Winner required"}, status=400)
+
+    try:
+        winner = Team.objects.get(id=winner_id)
+    except Team.DoesNotExist:
+        return Response({"error": "Invalid team"}, status=400)
+
+
+    match.winner = winner
+    match.status = "completed"   # 🔥 important
+    match.save()
+
+
+    Prediction.objects.filter(
+        match=match,
+        predicted_winner=winner
+    ).update(points=10)
+
+    Prediction.objects.filter(
+        match=match
+    ).exclude(predicted_winner=winner).update(points=0)
+
+    return Response({"message": "Winner updated successfully"})
