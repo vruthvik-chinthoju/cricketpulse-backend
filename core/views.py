@@ -397,8 +397,9 @@ class GithubLogin(APIView):
                 "client_id": os.getenv("GITHUB_CLIENT_ID"),
                 "client_secret": os.getenv("GITHUB_CLIENT_SECRET"),
                 "code": code,
+                "redirect_uri": "https://vruthvik-chinthoju.github.io/cricketpulse-frontend/#/github-callback"
             },
-            headers={"Accept": "application/json"}
+            headers={"Accept": "application/json"}  
         )
 
         token_json = token_res.json()
@@ -430,14 +431,18 @@ class GithubLogin(APIView):
         if not email:
             return Response({"error": "Email not found"}, status=400)
 
-        # 🔥 Step 3: Create or get user
         user, _ = User.objects.get_or_create(
             email=email,
             defaults={"username": email.split("@")[0]}
         )
 
-        # 🔥 Step 4: Generate JWT
         refresh = RefreshToken.for_user(user)
+
+        print("CODE:", code)
+        print("CLIENT ID:", os.getenv("GITHUB_CLIENT_ID"))
+        print("CLIENT SECRET:", os.getenv("GITHUB_CLIENT_SECRET"))
+
+        print("TOKEN RESPONSE:", token_res.json())
 
         return Response({
             "access": str(refresh.access_token),
