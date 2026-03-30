@@ -12,6 +12,6 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('api/auth/google/', GoogleLogin.as_view(), name='google_login'),
     path('api/auth/registration/', include('dj_rest_auth.registration.urls')),
-    path('api/auth/github/', GithubLogin.as_view(), name='github_login'),
+    path("api/github-login/", GithubLogin.as_view()),
 ]
 
