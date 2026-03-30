@@ -14,7 +14,6 @@ urlpatterns = [
     path("predict/<int:match_id>/",predict_match),
     path("chat-ai/", chat_ai),
     path("update-winner/<int:match_id>/",update_match_winner),
-    path("create-admin/", create_admin),
     
     
 ]
