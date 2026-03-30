@@ -400,8 +400,15 @@ class GithubLogin(APIView):
                 "redirect_uri": "https://vruthvik-chinthoju.github.io/cricketpulse-frontend/#/github-callback"
             },
             headers={"Accept": "application/json"}  
+
         )
 
+        print("CODE:", code)
+        print("CLIENT ID:", os.getenv("GITHUB_CLIENT_ID"))
+        print("CLIENT SECRET:", os.getenv("GITHUB_CLIENT_SECRET"))
+
+        print("TOKEN RESPONSE:", token_res.json())
+        
         token_json = token_res.json()
         access_token = token_json.get("access_token")
 
@@ -438,11 +445,7 @@ class GithubLogin(APIView):
 
         refresh = RefreshToken.for_user(user)
 
-        print("CODE:", code)
-        print("CLIENT ID:", os.getenv("GITHUB_CLIENT_ID"))
-        print("CLIENT SECRET:", os.getenv("GITHUB_CLIENT_SECRET"))
 
-        print("TOKEN RESPONSE:", token_res.json())
 
         return Response({
             "access": str(refresh.access_token),
