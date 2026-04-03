@@ -6,6 +6,7 @@ from core.views import GoogleLogin,GithubLogin
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('core.urls')),
+    path("api/", include("cricketpulseai.urls")),
     path('api/login/', TokenObtainPairView.as_view()),
     path('api/refresh/', TokenRefreshView.as_view()),
     path('api/auth/', include('dj_rest_auth.urls')),

@@ -23,13 +23,6 @@ from django.contrib.auth.models import User
 
 
 
-
-
-
-
-
-
-
 API_KEY = "1775198c-0200-4142-80cc-ec951bf196f7"
 User = get_user_model()
 
@@ -483,7 +476,7 @@ def update_match_winner(request, match_id):
 
 
     match.winner = winner
-    match.status = "completed"   # 🔥 important
+    match.status = "completed" 
     match.save()
 
 
