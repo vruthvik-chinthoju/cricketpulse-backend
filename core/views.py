@@ -30,24 +30,51 @@ User = get_user_model()
 
 def format_player_stats(stats):
     formatted = {}
+
     allowed = ["t20", "ipl", "odi", "test"]
+
+
+    mapping = {
+        "M": "matches",
+        "RUNS": "runs",
+        "AVG": "average",
+        "SR": "strike_rate",
+        "HS": "highest_score",
+        "4S": "fours",
+        "6S": "sixes",
+        "50S": "fifties",
+        "100S": "hundreds",
+        "WKTS": "wickets",
+        "ECON": "economy"
+    }
 
     for s in stats:
         mt = s.get("matchtype", "").lower()
-
-        if mt not in allowed:
-            continue
-
         stat = s.get("stat")
         value = s.get("value")
+
+        if mt not in allowed or not stat:
+            continue
 
         if value in ["-", "", None, "N/A"]:
             continue
 
+        try:
+            if "." in str(value):
+                value = float(value)
+            else:
+                value = int(value)
+        except:
+            pass
+
+        clean_key = mapping.get(stat, stat.lower())
+
         if mt not in formatted:
             formatted[mt] = {}
 
-        formatted[mt][stat] = value
+       
+        if clean_key not in formatted[mt]:
+            formatted[mt][clean_key] = value
 
     return formatted
 
