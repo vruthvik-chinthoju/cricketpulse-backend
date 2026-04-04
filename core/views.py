@@ -27,6 +27,11 @@ API_KEY = "1775198c-0200-4142-80cc-ec951bf196f7"
 User = get_user_model()
 
 
+@api_view(['GET'])
+def clear_player_cache(request):
+    CachedPlayer.objects.all().delete()
+    return Response({"message": "Cache cleared"})
+
 
 def format_player_stats(stats):
     formatted = {}
