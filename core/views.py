@@ -84,10 +84,12 @@ def format_player_stats(stats):
 @api_view(['GET'])
 def get_player_info(request, player_id):
 
-    cached = CachedPlayer.objects.filter(player_id=player_id).first()
+    refresh = request.GET.get("refresh")
 
-    if cached:
-        return Response(cached.data)
+    if not refresh:
+        cached = CachedPlayer.objects.filter(player_id=player_id).first()
+        if cached:
+            return Response(cached.data)
 
     url = f"https://api.cricapi.com/v1/players_info?apikey={API_KEY}&id={player_id}"
     res = requests.get(url)
