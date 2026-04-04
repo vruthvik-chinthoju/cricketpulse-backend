@@ -36,26 +36,25 @@ def clear_player_cache(request):
 def format_player_stats(stats):
     formatted = {}
 
-    allowed = ["t20", "ipl", "odi", "test"]
-
+    allowed = ["t20", "t20i", "ipl", "odi", "test"]
 
     mapping = {
-        "M": "matches",
-        "RUNS": "runs",
-        "AVG": "average",
-        "SR": "strike_rate",
-        "HS": "highest_score",
-        "4S": "fours",
-        "6S": "sixes",
-        "50S": "fifties",
-        "100S": "hundreds",
-        "WKTS": "wickets",
-        "ECON": "economy"
+        "m": "matches",
+        "runs": "runs",
+        "avg": "average",
+        "sr": "strike_rate",
+        "hs": "highest_score",
+        "4s": "fours",
+        "6s": "sixes",
+        "50s": "fifties",
+        "100s": "hundreds",
+        "wkts": "wickets",
+        "econ": "economy"
     }
 
     for s in stats:
         mt = s.get("matchtype", "").lower()
-        stat = s.get("stat")
+        stat = s.get("stat", "").lower()   # ✅ FIXED
         value = s.get("value")
 
         if mt not in allowed or not stat:
@@ -72,12 +71,14 @@ def format_player_stats(stats):
         except:
             pass
 
-        clean_key = mapping.get(stat, stat.lower())
+        if mt == "t20i":
+            mt = "t20"
+
+        clean_key = mapping.get(stat, stat)
 
         if mt not in formatted:
             formatted[mt] = {}
 
-       
         if clean_key not in formatted[mt]:
             formatted[mt][clean_key] = value
 
