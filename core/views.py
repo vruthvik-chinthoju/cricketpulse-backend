@@ -434,7 +434,7 @@ class GithubLogin(APIView):
                 "client_id": os.getenv("GITHUB_CLIENT_ID"),
                 "client_secret": os.getenv("GITHUB_CLIENT_SECRET"),
                 "code": code,
-                "redirect_uri": "https://vruthvik-chinthoju.github.io/cricketpulse-frontend-v2/"
+                "redirect_uri": "https://vruthvik-chinthoju.github.io/cricketpulse-frontend-v2/#/github-callback"
             },
             headers={"Accept": "application/json"}  
 
